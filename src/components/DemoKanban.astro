@@ -35,7 +35,7 @@ const columns = TASK_STATUSES.map((id) => ({
 const total = t.kanban.total_tasks.replace('{count}', String(TASKS.length));
 
 const badgeLabel =
-  'inline-flex h-5 shrink-0 items-center rounded-4xl border border-border px-2 py-0.5 text-[10px] font-medium leading-none text-foreground';
+  'inline-flex h-5 shrink-0 items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-medium leading-none text-primary';
 
 const card =
   'group/card rounded-lg border border-border bg-(--color-surface) p-3 shadow-sm transition-shadow data-[dragging]:shadow-lg data-[dragging]:ring-2 data-[dragging]:ring-primary/30 data-[dragging]:opacity-70';
