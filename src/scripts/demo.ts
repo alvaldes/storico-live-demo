@@ -494,12 +494,58 @@ function initUserMenu(root: HTMLElement): void {
 
   const close = (): void => {
     menu.classList.add('hidden');
+    menu.style.removeProperty('top');
+    menu.style.removeProperty('bottom');
+    menu.style.removeProperty('left');
+    menu.style.removeProperty('right');
     trigger.setAttribute('aria-expanded', 'false');
+  };
+
+  const positionMenu = (): void => {
+    const sidebar = document.querySelector<HTMLElement>('[data-sidebar]');
+    const isCollapsed = sidebar?.getAttribute('data-collapsible') === 'icon';
+    const triggerRect = trigger.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    if (isCollapsed) {
+      // Collapsed: position to the right
+      menu.style.left = `${triggerRect.right + 8}px`;
+      menu.style.right = 'auto';
+      
+      // Adjust vertical position to stay in viewport
+      const spaceBelow = viewportHeight - triggerRect.top;
+      const spaceAbove = triggerRect.bottom;
+      
+      if (spaceBelow >= menuRect.height + 8) {
+        // Enough space below
+        menu.style.top = `${triggerRect.top}px`;
+        menu.style.bottom = 'auto';
+      } else if (spaceAbove >= menuRect.height + 8) {
+        // Enough space above
+        menu.style.top = 'auto';
+        menu.style.bottom = `${viewportHeight - triggerRect.bottom}px`;
+      } else {
+        // Not enough space either way, align to top of viewport
+        menu.style.top = '8px';
+        menu.style.bottom = 'auto';
+      }
+    } else {
+      // Expanded: position above (default CSS behavior)
+      menu.style.removeProperty('top');
+      menu.style.removeProperty('bottom');
+      menu.style.removeProperty('left');
+      menu.style.removeProperty('right');
+    }
   };
 
   trigger.addEventListener('click', () => {
     const hidden = menu.classList.toggle('hidden');
     trigger.setAttribute('aria-expanded', String(!hidden));
+    if (!hidden) {
+      positionMenu();
+    }
   });
 
   document.addEventListener('click', (event) => {

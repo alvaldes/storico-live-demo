@@ -94,7 +94,7 @@ const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
     display: flex;
     flex-direction: column;
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow:
       0 25px 50px -12px rgba(0, 0, 0, 0.25),
       0 0 0 1px rgba(0, 0, 0, 0.1);
@@ -254,7 +254,7 @@ const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
     background: #fff;
     flex: 1;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
   :global([data-theme='dark']) .safari-content {

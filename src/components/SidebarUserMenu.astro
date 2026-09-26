@@ -49,23 +49,24 @@ const avatar =
         title={t.demo.userName}
         class:list={[menuButton, 'h-12 p-2 group-data-[collapsible=icon]:p-0!']}
       >
-        <span class={avatar}>{initials}</span>
-        <span class="grid flex-1 leading-tight">
+        <span class:list={[avatar, 'group-data-[collapsible=icon]:size-8']}>{initials}</span>
+        <span class="grid flex-1 leading-tight group-data-[collapsible=icon]:hidden">
           <span class="truncate font-medium">{t.demo.userName}</span>
           <span class="truncate text-xs text-sidebar-foreground/60">demo@example.com</span>
         </span>
-        <Icon name="chevrons-up-down" class="ml-auto" />
+        <Icon name="chevrons-up-down" class="ml-auto group-data-[collapsible=icon]:hidden" />
       </button>
 
       <!--
-        Anchored to its trigger: `bottom-full` inside the relative <li> puts it
-        right above the button, so it travels with the footer instead of floating
-        at a fixed distance from the bottom of the window.
+        Menu positioning: dropdown upward when expanded, to the right when collapsed.
+        Uses group-data-[collapsible=icon] to switch between the two modes.
       -->
       <div
         data-user-menu
         role="menu"
-        class="absolute bottom-full left-0 z-50 mb-1 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10"
+        class="absolute z-50 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10
+          bottom-full left-0 mb-1
+          group-data-[collapsible=icon]:bottom-auto group-data-[collapsible=icon]:left-full group-data-[collapsible=icon]:top-0 group-data-[collapsible=icon]:mb-0 group-data-[collapsible=icon]:ml-2"
       >
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <span class={avatar}>{initials}</span>
