@@ -10,6 +10,8 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   output: 'static',
+  site: 'https://alvaldes.github.io',
+  base: '/storico-live-demo',
 
   // Locale routes mirror the product (/en/ and /es/), both written out at build
   // time. With every page static there is nothing to negotiate at runtime: the
