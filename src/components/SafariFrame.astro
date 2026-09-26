@@ -11,7 +11,10 @@ interface Props {
 const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
 ---
 
-<div class="safari-frame h-175">
+<div
+  class="safari-frame"
+  style={height !== 'auto' ? `--frame-height: ${height}` : undefined}
+>
   <!-- Toolbar -->
   <div class="safari-toolbar overflow-hidden">
     <!-- Traffic lights -->
@@ -83,7 +86,7 @@ const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
   </div>
 
   <!-- Content area -->
-  <div class="safari-content" style={height !== 'auto' ? `height: ${height}` : undefined}>
+  <div class="safari-content flex-1 min-h-0">
     <slot />
   </div>
 </div>
@@ -93,6 +96,10 @@ const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
     --toolbar-height: 52px;
     display: flex;
     flex-direction: column;
+    /* The single sizing knob: the `height` prop sets the frame itself (as a
+       custom property, so the embedded-mode override below can win without
+       fighting an inline style). Content flexes inside it. */
+    height: var(--frame-height, auto);
     border-radius: 12px;
     overflow: hidden;
     box-shadow:
@@ -255,6 +262,17 @@ const { url = 'storico.vercel.app', height = 'auto' } = Astro.props;
     flex: 1;
     min-height: 0;
     overflow: visible;
+  }
+
+  /* Embedded (iframe) mode: the host owns the box, so the frame fills the
+     iframe viewport instead of fighting it. Toggled before paint by an inline
+     script in DemoLayout that sets data-embedded on <html> when the page runs
+     inside a frame (window.self !== window.top). */
+  :global([data-embedded]) .safari-frame {
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   :global([data-theme='dark']) .safari-content {

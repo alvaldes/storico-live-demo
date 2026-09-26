@@ -53,6 +53,18 @@ const t = getT(locale);
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
+
+    <!--
+      Embedded mode. Same is:inline, before-paint contract as the theme
+      bootstrap above: when this page runs inside a frame the host owns the
+      box, so <html> is tagged and the CSS below drops the standalone page's
+      body padding and lets SafariFrame fill the iframe viewport.
+    -->
+    <script is:inline>
+      if (window.self !== window.top) {
+        document.documentElement.setAttribute('data-embedded', '');
+      }
+    </script>
   </head>
 
   <body class="bg-(--color-surface) p-4 lg:p-8">
@@ -91,6 +103,15 @@ const t = getT(locale);
     </SafariFrame>
 
     <DemoUpgradeModal locale={locale} />
+
+    <style is:global>
+      /* Embedded in a host iframe (html[data-embedded] set before paint by the
+         head script): the SafariFrame fills the viewport on its own, so the
+         standalone page's body padding would only eat host space. */
+      html[data-embedded] body {
+        padding: 0;
+      }
+    </style>
 
     <script>
       import '@/scripts/demo';
