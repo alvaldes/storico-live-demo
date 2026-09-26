@@ -6,7 +6,7 @@ const NAMES = [
   'chevron-right', 'chevrons-up-down', 'circle-user', 'file-text', 'fingerprint',
   'folder-kanban', 'grip-vertical', 'house', 'kanban-square', 'languages', 'layout-dashboard', 'list-tree',
   'loader-2', 'log-out', 'moon', 'panel-left', 'pencil', 'plus', 'search', 'settings',
-  'sparkles', 'sun', 'trash-2', 'upload', 'user',
+  'sparkles', 'sun', 'trash-2', 'upload', 'user', 'x',
 ];
 function literal(src, file) {
   const start = src.indexOf('const __iconNode = ');

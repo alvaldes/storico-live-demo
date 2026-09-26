@@ -13,6 +13,7 @@
  */
 import AppHeader from '@/components/AppHeader.astro';
 import AppSidebar from '@/components/AppSidebar.astro';
+import DemoUpgradeModal from '@/components/DemoUpgradeModal.astro';
 import { getT, type Locale } from '@/i18n';
 import '@/styles/globals.css';
 
@@ -86,6 +87,8 @@ const t = getT(locale);
         </main>
       </div>
     </div>
+
+    <DemoUpgradeModal locale={locale} />
 
     <script>
       import '@/scripts/demo';

@@ -104,5 +104,11 @@
     "dark": "Dark",
     "light": "Light",
     "system": "System"
+  },
+  "upgrade": {
+    "title": "Sign in to continue",
+    "description": "This is a limited demo. Sign in to access all features, manage real projects, and collaborate with your team.",
+    "cta": "Go to Storico Dashboard",
+    "hint": "Free for small teams. No credit card required."
   }
 }

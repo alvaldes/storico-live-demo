@@ -122,7 +122,7 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
 
               <div class="my-1 h-px bg-border"></div>
 
-              <button type="button" role="menuitem" class="flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0">
+              <button type="button" role="menuitem" data-upgrade-trigger class="flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0">
                 <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent border outline-popover">
                   <Icon name="plus" class="size-4" />
                 </span>
@@ -175,11 +175,12 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
                             type="button"
                             role="menuitem"
                             data-nav={child.isCurrent ? 'stories' : undefined}
+                            data-upgrade-trigger={!child.isCurrent ? '' : undefined}
                             class:list={[
                               'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
-                              child.isCurrent && 'font-medium text-primary'
+                              child.isCurrent && 'font-medium text-primary',
+                              !child.isCurrent && 'text-muted-foreground'
                             ]}
-                            disabled={!child.isCurrent}
                           >
                             <span>{child.isCurrent ? child.label : t.nav[child.key]}</span>
                           </button>
@@ -192,6 +193,7 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
                       type="button"
                       title={t.nav[item.key]}
                       data-nav={'view' in item ? item.view : undefined}
+                      data-upgrade-trigger={!('view' in item) ? '' : undefined}
                       data-sidebar-item={'view' in item ? '' : undefined}
                       data-active={'view' in item && item.view === 'stories' ? '' : undefined}
                       aria-current={

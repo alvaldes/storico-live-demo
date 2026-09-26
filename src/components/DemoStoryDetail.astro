@@ -80,6 +80,7 @@ const PARTS = [
   -->
   <button
     type="button"
+    data-upgrade-trigger
     class="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
   >
     <Icon name="arrow-left" />
@@ -108,11 +109,11 @@ const PARTS = [
     </div>
 
     <div class="flex items-center gap-2">
-      <button type="button" class={btnOutline}>
+      <button type="button" data-upgrade-trigger class={btnOutline}>
         <Icon name="pencil" />
         {t.common.edit}
       </button>
-      <button type="button" class={btnOutlineDestructive}>
+      <button type="button" data-upgrade-trigger class={btnOutlineDestructive}>
         <Icon name="trash-2" />
         {t.common.delete}
       </button>

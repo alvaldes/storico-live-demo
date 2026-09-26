@@ -104,5 +104,11 @@
     "dark": "Oscuro",
     "light": "Claro",
     "system": "Sistema"
+  },
+  "upgrade": {
+    "title": "Inicia sesión para continuar",
+    "description": "Esta es una demo limitada. Inicia sesión para acceder a todas las funciones, gestionar proyectos reales y colaborar con tu equipo.",
+    "cta": "Ir al Panel de Storico",
+    "hint": "Gratis para equipos pequeños. Sin tarjeta de crédito."
   }
 }

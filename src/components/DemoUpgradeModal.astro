@@ -1,0 +1,114 @@
+---
+/**
+ * Modal shown when clicking inert/demo-only buttons.
+ * Blurs the background and invites the visitor to sign in to the real app.
+ */
+import Icon from '@/components/Icon.astro';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+const APP_DASHBOARD_URL = 'https://storico.vercel.app/dashboard';
+---
+
+<div
+  id="upgrade-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="upgrade-modal-title"
+>
+  <div class="relative mx-4 w-full max-w-md rounded-xl bg-popover p-6 text-popover-foreground shadow-xl ring-1 ring-foreground/10">
+    <button
+      type="button"
+      data-upgrade-modal-close
+      class="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label={t.common.cancel}
+    >
+      <Icon name="x" class="size-4" />
+    </button>
+
+    <div class="flex flex-col items-center text-center">
+      <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
+        <Icon name="circle-user" class="size-6 text-primary" />
+      </div>
+
+      <h2 id="upgrade-modal-title" class="mb-2 text-lg font-semibold">
+        {t.upgrade.title}
+      </h2>
+
+      <p class="mb-6 text-sm text-muted-foreground">
+        {t.upgrade.description}
+      </p>
+
+      <a
+        href={APP_DASHBOARD_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Icon name="arrow-left" class="size-4 rotate-180" />
+        {t.upgrade.cta}
+      </a>
+
+      <p class="mt-4 text-xs text-muted-foreground">
+        {t.upgrade.hint}
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initUpgradeModal(): void {
+    const modal = document.getElementById('upgrade-modal');
+    if (!modal) return;
+
+    const closeBtns = modal.querySelectorAll<HTMLElement>('[data-upgrade-modal-close]');
+
+    const openModal = (): void => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = (): void => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    };
+
+    // Wire up all inert buttons
+    document.querySelectorAll<HTMLElement>('[data-upgrade-trigger]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) closeModal();
+    });
+
+    // Close buttons
+    closeBtns.forEach((btn) => btn.addEventListener('click', closeModal));
+
+    // Close on Escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initUpgradeModal);
+  } else {
+    initUpgradeModal();
+  }
+</script>
