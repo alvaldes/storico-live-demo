@@ -14,6 +14,7 @@
 import AppHeader from '@/components/AppHeader.astro';
 import AppSidebar from '@/components/AppSidebar.astro';
 import DemoUpgradeModal from '@/components/DemoUpgradeModal.astro';
+import SafariFrame from '@/components/SafariFrame.astro';
 import { getT, type Locale } from '@/i18n';
 import '@/styles/globals.css';
 
@@ -54,39 +55,40 @@ const t = getT(locale);
     </script>
   </head>
 
-  <body class="bg-(--color-surface)">
-    <div
-      class="group/sidebar-wrapper flex min-h-svh w-full"
-      style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
-    >
-      <AppSidebar locale={locale} />
+  <body class="bg-(--color-surface) p-4 lg:p-8">
+    <SafariFrame url="storico.vercel.app/demo" height="70vh">
+      <div
+        class="group/sidebar-wrapper flex h-full w-full overflow-hidden"
+        style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
+      >
+        <AppSidebar locale={locale} />
 
-      <div class="relative flex w-full flex-1 flex-col bg-background">
-        <AppHeader locale={locale} />
+        <div class="relative flex w-full flex-1 flex-col bg-background overflow-hidden">
+          <AppHeader locale={locale} />
 
-        <main class="flex min-w-0 flex-1 flex-col p-4 lg:p-6 overflow-x-hidden">
-          <!--
-            The demo's own framing, on the entry view only: from the board on,
-            the product's page titles speak for themselves, and stacking two
-            headings would read as a page title above a page title.
-          -->
-          <div data-view-when="stories" class="mb-6">
-            <h1 class="text-2xl font-bold tracking-tight text-foreground">
-              {t.demo.title}
-            </h1>
-            <p class="mt-1 text-sm text-muted-foreground">{t.demo.subtitle}</p>
-          </div>
+          <main class="flex min-w-0 flex-1 flex-col p-4 lg:p-6 overflow-x-hidden overflow-y-auto">
+            <!--
+              The demo's own framing, on the entry view only: from the board on,
+              the product's page titles speak for themselves, and stacking two
+              headings would read as a page title above a page title.
+            -->
+            <div data-view-when="stories" class="mb-6">
+              <h1 class="text-2xl font-bold tracking-tight text-foreground">
+                {t.demo.title}
+              </h1>
+              <p class="mt-1 text-sm text-muted-foreground">{t.demo.subtitle}</p>
+            </div>
 
-          <div class="min-h-0 flex-1">
-            <slot />
-          </div>
-
-          <div class="mt-6 border-t border-(--color-border) pt-4 text-xs text-(--color-text-secondary)">
-            <p class="m-0">{t.demo.footerNote}</p>
-          </div>
-        </main>
+            <div class="min-h-0 flex-1">
+              <slot />
+              <div class="mt-6 border-t border-(--color-border) py-4 text-xs text-(--color-text-secondary)">
+                <p class="m-0">{t.demo.footerNote}</p>
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SafariFrame>
 
     <DemoUpgradeModal locale={locale} />
 
