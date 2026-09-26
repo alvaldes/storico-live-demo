@@ -118,6 +118,13 @@ const MARKERS: Array<{ key: string; pattern: RegExp }> = [
   { key: "soThat", pattern: /\bso\s+that\b/i },
 ];
 
+/**
+ * Set by `initTyping()` only when the typing loop actually runs: a story element
+ * exists and motion is allowed. The embed messaging reads it, so a "demo-leave"
+ * message degrades to a harmless no-op when there is no loop to resume.
+ */
+let resumeLoop: (() => void) | null = null;
+
 function initTyping(): void {
   const storyEl = document.querySelector<HTMLElement>("[data-story-text]");
   if (!storyEl) return;
@@ -207,23 +214,58 @@ function initTyping(): void {
     window.removeEventListener("pointerdown", onInteraction, true);
   };
 
-  // Resume loop when window loses focus (user leaves demo)
-  const onBlur = (): void => {
-    if (hasInteracted) {
-      hasInteracted = false;
-      startTyping();
-    }
+  // Resume the loop when the visitor leaves: a real window blur, or the host's
+  // "demo-leave" message (see initEmbedMessaging). Only meaningful after a
+  // prior interaction; while the loop is still running it is a no-op.
+  const onLeave = (): void => {
+    if (!hasInteracted) return;
+    hasInteracted = false;
+    startTyping();
   };
+  resumeLoop = onLeave;
 
   // Capture all interaction types on window (capture phase to catch early)
   window.addEventListener("click", onInteraction, true);
   window.addEventListener("keydown", onInteraction, true);
   window.addEventListener("scroll", onInteraction, true);
   window.addEventListener("pointerdown", onInteraction, true);
-  window.addEventListener("blur", onBlur);
+  window.addEventListener("blur", onLeave);
 
   // Start the typing loop
   startTyping();
+}
+
+/* ── Embed messaging ─────────────────────────────────────────────── */
+
+const EMBED_MESSAGE_SOURCE = "storico-landing";
+const EMBED_MESSAGE_LEAVE = "demo-leave";
+
+/**
+ * Receives the landing host's control messages.
+ *
+ * The demo is embedded cross-origin, and the host cannot reach into our
+ * window: forwarding DOM `blur`/`focus` events into `contentWindow` is
+ * impossible, so the host sends an explicit message instead. A real window
+ * `blur` still works and stays wired (it fires when the whole tab hides).
+ *
+ * We validate the message shape, never the origin. The landing's Vercel
+ * preview URLs are random per deployment, so an origin allowlist would have to
+ * be a wildcard and would buy nothing; the only command we accept can at worst
+ * restart a cosmetic animation and reads no user data.
+ */
+function initEmbedMessaging(): void {
+  window.addEventListener("message", (event) => {
+    const data: unknown = event.data;
+    if (typeof data !== "object" || data === null) return;
+    const record = data as Record<string, unknown>;
+    if (record.source !== EMBED_MESSAGE_SOURCE) return;
+    if (record.type !== EMBED_MESSAGE_LEAVE) return;
+
+    // Same semantics as the blur handler: resume only after a prior
+    // interaction. A no-op while the loop is still running, and when no loop
+    // was ever started (missing story element or reduced motion).
+    resumeLoop?.();
+  });
 }
 
 /* ── Extraction ──────────────────────────────────────────────────── */
@@ -627,6 +669,7 @@ function initUserMenu(root: HTMLElement): void {
 function init(): void {
   setStoryState("idle");
   initTyping();
+  initEmbedMessaging();
   initExtraction();
   initViews();
   // Normalises the chrome the server rendered for the entry view.
