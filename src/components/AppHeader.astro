@@ -1,0 +1,92 @@
+---
+/**
+ * The product's dashboard header: sidebar trigger, vertical separator, then the
+ * breadcrumb. Same classes as `DashboardHeader` (sticky, 16rem-high strip,
+ * bottom border, shrink to 12 on a collapsed rail).
+ *
+ * One addition, on the right: the demo badge. The product's header has nothing
+ * there, but a visitor has to be able to tell this apart from the app.
+ *
+ * The height rule is the product's: it is not the sidebar that shrinks the
+ * header, it is the *wrapper* noticing a collapsed sidebar inside it, which is
+ * why the variant needs the named `group/sidebar-wrapper` and `has-data-`.
+ */
+import Icon from '@/components/Icon.astro';
+import { STORY } from '@/data/guion';
+import { shortUUID } from '@/data/types';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<header
+  class="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-(--color-border) bg-(--color-surface) px-3 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
+>
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      data-sidebar-toggle
+      aria-expanded="true"
+      aria-label={t.nav.toggleMenu}
+      class="inline-flex size-7 items-center justify-center rounded-md text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+    >
+      <Icon name="panel-left" />
+    </button>
+
+    <div class="mx-0 my-auto hidden h-4 w-px shrink-0 bg-border sm:block"></div>
+
+    <nav
+      data-view-when="stories"
+      aria-label={t.nav.navigation}
+      class="ml-1 flex min-w-0 items-center gap-1.5 text-sm"
+    >
+      <Icon name="house" class="size-4 text-muted-foreground/70" />
+      <Icon name="chevron-right" class="size-3.5 text-muted-foreground/50" />
+      <span class="hidden text-muted-foreground sm:inline">{t.nav.stories}</span>
+      <Icon
+        name="chevron-right"
+        class="hidden size-3.5 text-muted-foreground/50 sm:inline"
+      />
+      <span class="truncate font-mono text-xs text-foreground">
+        {shortUUID(STORY.id)}
+      </span>
+    </nav>
+
+    <!--
+      One breadcrumb per view, like the product's pages have: the board and the
+      export are their own pages there, not a detail of a story.
+    -->
+    <nav
+      data-view-when="kanban"
+      style="display:none"
+      aria-label={t.nav.navigation}
+      class="ml-1 flex min-w-0 items-center gap-1.5 text-sm"
+    >
+      <Icon name="house" class="size-4 text-muted-foreground/70" />
+      <Icon name="chevron-right" class="size-3.5 text-muted-foreground/50" />
+      <span class="truncate text-foreground">{t.nav.kanban}</span>
+    </nav>
+
+    <nav
+      data-view-when="export"
+      style="display:none"
+      aria-label={t.nav.navigation}
+      class="ml-1 flex min-w-0 items-center gap-1.5 text-sm"
+    >
+      <Icon name="house" class="size-4 text-muted-foreground/70" />
+      <Icon name="chevron-right" class="size-3.5 text-muted-foreground/50" />
+      <span class="truncate text-foreground">{t.nav.export}</span>
+    </nav>
+  </div>
+
+  <span
+    class="rounded-full bg-(--color-accent-blue-bg) px-3 py-1 text-xs font-semibold tracking-wide text-(--color-accent-blue-icon) uppercase"
+  >
+    {t.demo.badge}
+  </span>
+</header>

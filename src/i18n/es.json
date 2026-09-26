@@ -1,0 +1,108 @@
+{
+  "demo": {
+    "badge": "Demo en vivo",
+    "title": "De una historia de usuario a tareas Kanban",
+    "subtitle": "Una simulación de Storico: la historia se escribe sola y las tareas salen de un catálogo preparado. Nada aquí llama a un LLM ni a un backend.",
+    "storyHint": "Formato estándar, en inglés: As a(n) ..., I want ..., so that ...",
+    "footerNote": "Datos de demo, preparados para este ejercicio. Ninguna petición sale de tu navegador.",
+    "userName": "Usuario demo",
+    "taskDetailTitle": "Tarea",
+    "taskDetailHint": "Esta es la tarea que produjo la extracción. Movela desde el estado."
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "app": {
+    "name": "Storico",
+    "tagline": "De historias de usuario a tareas Kanban en segundos."
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "projects": "Proyectos",
+    "allProjects": "Todos los Proyectos",
+    "stories": "Historias de Usuario",
+    "kanban": "Tablero Kanban",
+    "export": "Exportar",
+    "settings": "Configuración",
+    "account": "Cuenta",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "navigation": "Navegación",
+    "toggleMenu": "Alternar menú"
+  },
+  "common": {
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar"
+  },
+  "sidebar": {
+    "workspaces": "Espacios de trabajo",
+    "newWorkspace": "Nuevo espacio"
+  },
+  "stories": {
+    "raw_text_label": "Historia de usuario completa",
+    "detail_parts": "Partes",
+    "actor_label": "Actor / Rol",
+    "feature_label": "Funcionalidad / Acción",
+    "benefit_label": "Beneficio",
+    "detail_tasks_title": "Tareas",
+    "detail_extract": "Extraer Tareas",
+    "extraction_pending": "Extrayendo...",
+    "extraction_complete": "Extraído",
+    "extraction_tasks_in_progress": "Extrayendo tareas...",
+    "detail_tasks_empty": "Todavía no hay tareas. Extrae tareas de esta historia de usuario.",
+    "detail_back_to_stories": "Volver a historias",
+    "detail_back_to_project": "Volver al proyecto",
+    "detail_created": "Creada",
+    "keyword_as_a": "\"As a(n)\"",
+    "keyword_i_want": "\"I want\"",
+    "keyword_so_that": "\"so that\"",
+    "keyword_validation": "Validación de formato",
+    "keyword_valid": "Formato válido — todas las palabras clave presentes",
+    "status_pending_extraction": "Extracción Pendiente",
+    "status_extracting": "Extrayendo",
+    "status_extracted": "Extraído",
+    "status_failed_extraction": "Extracción Fallida"
+  },
+  "kanban": {
+    "title": "Tablero Kanban",
+    "empty_board": "Aún no hay tareas en este workspace",
+    "empty_board_hint": "Extrae tareas de una historia de usuario para verlas aquí.",
+    "empty_column": "Sin tareas aún",
+    "total_tasks": "{count} tareas",
+    "invalid_drop_title": "Movimiento Inválido",
+    "invalid_drop": "No se puede mover la tarea de {from} a {to}. Permitidos: {allowed}",
+    "columns": {
+      "backlog": "Pendiente",
+      "todo": "Por Hacer",
+      "in_progress": "En Progreso",
+      "review": "Revisión",
+      "done": "Terminado"
+    }
+  },
+  "exportPage": {
+    "title": "Exportar Tareas",
+    "description": "Exporta todas las tareas del espacio de trabajo en formato JSON o Markdown.",
+    "format_label": "Formato",
+    "format_json": "JSON",
+    "format_markdown": "Markdown",
+    "download": "Descargar",
+    "no_tasks": "No hay tareas para exportar en este espacio de trabajo."
+  },
+  "taskEditor": {
+    "title": "Editar Tarea",
+    "description": "Actualiza los detalles de la tarea",
+    "title_label": "Título",
+    "description_label": "Descripción",
+    "status_label": "Estado",
+    "labels_label": "Etiquetas",
+    "dependencies_label": "Dependencias",
+    "cancel": "Cancelar"
+  },
+  "theme": {
+    "toggle": "Cambiar tema",
+    "dark": "Oscuro",
+    "light": "Claro",
+    "system": "Sistema"
+  }
+}

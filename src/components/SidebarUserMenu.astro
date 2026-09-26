@@ -1,0 +1,94 @@
+---
+/**
+ * The sidebar footer, shaped like the product's `NavUser`: the signed-in user as
+ * a large menu button with a chevron, and a dropdown with the grouped items.
+ *
+ * Two differences, both because this is a demo: there is no session, so the
+ * placeholder identity says so, and the menu carries only the two items that do
+ * something here - theme and language. Account and Sign out are gone rather than
+ * present and dead.
+ */
+import Icon from '@/components/Icon.astro';
+import { getT, localePath, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+const other: Locale = locale === 'en' ? 'es' : 'en';
+const otherLabel = other === 'es' ? 'Español' : 'English';
+
+// The product's `getInitials`: the first code point of each of the first two words.
+const initials = t.demo.userName
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((word) => Array.from(word)[0].toUpperCase())
+  .join('');
+
+const menuButton =
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left text-sm outline-none transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>svg]:size-4 [&>svg]:shrink-0';
+
+const menuItem =
+  'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0';
+
+const avatar =
+  'flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm text-muted-foreground';
+---
+
+<div class="flex flex-col gap-2 p-2" data-user-menu-root>
+  <ul class="flex w-full min-w-0 flex-col gap-0">
+    <li class="group/menu-item relative">
+      <button
+        type="button"
+        data-user-menu-trigger
+        aria-expanded="false"
+        title={t.demo.userName}
+        class:list={[menuButton, 'h-12 p-2 group-data-[collapsible=icon]:p-0!']}
+      >
+        <span class={avatar}>{initials}</span>
+        <span class="grid flex-1 leading-tight">
+          <span class="truncate font-medium">{t.demo.userName}</span>
+          <span class="truncate text-xs text-sidebar-foreground/60">demo@example.com</span>
+        </span>
+        <Icon name="chevrons-up-down" class="ml-auto" />
+      </button>
+
+      <!--
+        Anchored to its trigger: `bottom-full` inside the relative <li> puts it
+        right above the button, so it travels with the footer instead of floating
+        at a fixed distance from the bottom of the window.
+      -->
+      <div
+        data-user-menu
+        role="menu"
+        class="absolute bottom-full left-0 z-50 mb-1 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10"
+      >
+        <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+          <span class={avatar}>{initials}</span>
+          <span class="grid flex-1 leading-tight">
+            <span class="truncate font-medium">{t.demo.userName}</span>
+            <span class="truncate text-xs text-muted-foreground">demo@example.com</span>
+          </span>
+        </div>
+
+        <div class="my-1 h-px bg-border"></div>
+
+        <button type="button" role="menuitem" data-theme-toggle class={menuItem}>
+          <Icon name="sun" class="size-4 dark:hidden" />
+          <Icon name="moon" class="hidden size-4 dark:block" />
+          <span class="dark:hidden">{t.theme.dark}</span>
+          <span class="hidden dark:block">{t.theme.light}</span>
+        </button>
+
+        <a role="menuitem" href={localePath(other)} class={menuItem}>
+          <Icon name="languages" class="size-4" />
+          {otherLabel}
+        </a>
+      </div>
+    </li>
+  </ul>
+</div>

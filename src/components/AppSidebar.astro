@@ -1,0 +1,214 @@
+---
+/**
+ * The product's sidebar, reproduced statically.
+ *
+ * The markup and the class recipes follow shadcn's sidebar and the product's
+ * `AppSidebar` (`sidebar` 16rem, `sidebar-accent` on hover, active item with
+ * `sidebar-accent` + medium weight, icon rail at `sidebar-width-icon`), so the
+ * frame reads as the app. The difference is the footer: the product shows the
+ * signed-in user, and a demo has no session, so the menu carries the two things
+ * that do work here - theme and language.
+ *
+ * Items are buttons, not links: the app's routes do not exist in this project,
+ * and a link that 404s is worse than a button that does nothing.
+ */
+import Icon from '@/components/Icon.astro';
+import SidebarUserMenu from '@/components/SidebarUserMenu.astro';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+// The workspace the demo pretends to be inside.
+const WORKSPACE = { name: 'Demo', role: 'admin' };
+
+// `view` is what turns an item into a real switch between the demo's three
+// panels; the items without one are decoration, and the JS leaves them alone.
+// Projects is expandable: it shows a submenu with "All Projects" and the current workspace.
+const NAV = [
+  { key: 'dashboard', icon: 'layout-dashboard' },
+  { key: 'projects', icon: 'folder-kanban', expandable: true, children: [
+    { key: 'allProjects', isCurrent: false },
+    { key: 'currentWorkspace', label: t.demo.title.slice(0,27)+" ...", isCurrent: true },
+  ]},
+  { key: 'stories', icon: 'file-text', view: 'stories' },
+  { key: 'kanban', icon: 'kanban-square', view: 'kanban' },
+  { key: 'export', icon: 'upload', view: 'export' },
+  { key: 'settings', icon: 'settings' },
+] as const;
+
+/** The active item, driven by a `data-active` attribute the script moves around. */
+const navActive =
+  'data-[active]:bg-sidebar-accent data-[active]:font-medium data-[active]:text-sidebar-accent-foreground';
+
+// The collapsible padding is NOT here on purpose: the large buttons (workspace,
+// user) need `p-0!` when collapsed and the small ones need `p-2!`. Two
+// `!important` padding rules on the same element are resolved by stylesheet
+// order, which put `p-2!` last and squeezed the 32px icon inside a 32px box back
+// down to 16px. Each button now declares the one it wants.
+const menuButton =
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left text-sm outline-none transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8! [&>svg]:size-4 [&>svg]:shrink-0';
+
+/** The nav items keep 8px of padding when the rail collapses; the large ones do not. */
+const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
+---
+
+<div
+  class="group peer hidden text-sidebar-foreground md:block"
+  data-sidebar
+  data-collapsible=""
+>
+  <!-- What holds the gap on desktop while the container is fixed. -->
+  <div
+    class="relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
+  >
+  </div>
+
+  <div
+    class="fixed inset-y-0 left-0 z-40 hidden h-svh w-(--sidebar-width) border-r border-(--color-sidebar-border) transition-[width] duration-200 ease-linear group-data-[collapsible=icon]:w-(--sidebar-width-icon) md:flex"
+  >
+    <div class="flex size-full flex-col bg-sidebar">
+      <!-- Workspace switcher -->
+      <div class="flex flex-col gap-2 p-2" data-workspace-menu-root>
+        <ul class="flex w-full min-w-0 flex-col gap-0">
+          <li class="group/menu-item relative">
+            <button
+              type="button"
+              title={WORKSPACE.name}
+              data-workspace-menu-trigger
+              aria-expanded="false"
+              class:list={[menuButton, 'h-12 p-2 group-data-[collapsible=icon]:p-0!']}
+            >
+              <span
+                class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+              >
+                <Icon name="building-2" />
+              </span>
+              <span class="grid flex-1 leading-tight">
+                <span class="truncate font-medium">{WORKSPACE.name}</span>
+                <span
+                  class="truncate text-xs text-sidebar-foreground/60"
+                  >{WORKSPACE.role}</span
+                >
+              </span>
+              <Icon name="chevrons-up-down" class="ml-auto" />
+            </button>
+
+            <!--
+              Workspace dropdown: anchored to its trigger, same pattern as the
+              user menu. Items are placeholders (demo has no real workspaces).
+            -->
+            <div
+              data-workspace-menu
+              role="menu"
+              class="absolute left-full top-0 z-50 ml-2 hidden-- w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10"
+            >
+              <span class="text-muted-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0">{t.sidebar.workspaces}</span>
+              <!-- class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0" -->
+
+              <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent border outline-popover">
+                  <Icon name="building-2" class="size-4" />
+                </span>
+                <span class="grid flex-1 leading-tight">
+                  <span class="truncate font-medium">{WORKSPACE.name}</span>
+                </span>
+                <Icon name="check" class="size-4 mr-1 text-primary" />
+              </div>
+
+              <div class="my-1 h-px bg-border"></div>
+
+              <button type="button" role="menuitem" class="flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0">
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent border outline-popover">
+                  <Icon name="plus" class="size-4" />
+                </span>
+                <span>{t.sidebar.newWorkspace}</span>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Navigation -->
+      <div
+        class="flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden"
+      >
+        <div class="relative flex w-full min-w-0 flex-col p-2">
+          <div
+            class="flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 transition-[margin,opacity] duration-200 ease-linear group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0"
+          >
+            {t.nav.navigation}
+          </div>
+          <ul class="flex w-full min-w-0 flex-col gap-0">
+            {
+              NAV.map((item) => (
+                <li class="group/menu-item relative">
+                  {'expandable' in item && item.expandable && item.children ? (
+                    // Expandable item with submenu (Projects)
+                    <>
+                      <button
+                        type="button"
+                        title={t.nav[item.key]}
+                        data-nav-expandable={item.key}
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        class:list={[menuButton, navButtonPadding, 'h-8 p-2', navActive]}
+                      >
+                        <Icon name={item.icon} />
+                        <span class="truncate">{t.nav[item.key]}</span>
+                        <Icon name="chevron-right" class="ml-auto transition-transform duration-200 group-data-[expanded=true]:rotate-90" />
+                      </button>
+
+                      <!-- Submenu -->
+                      <div
+                        data-nav-submenu={item.key}
+                        role="menu"
+                        class="left-full top-0 ml-1 hidden w-full bg-popover p-1 text-popover-foreground"
+                      >
+                        {item.children.map((child) => (
+                          <button
+                            type="button"
+                            role="menuitem"
+                            class:list={[
+                              'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
+                              child.isCurrent && 'font-medium text-primary'
+                            ]}
+                            disabled={!child.isCurrent}
+                          >
+                            <span>{child.isCurrent ? child.label : t.nav[child.key]}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    // Regular nav item
+                    <button
+                      type="button"
+                      title={t.nav[item.key]}
+                      data-nav={'view' in item ? item.view : undefined}
+                      data-sidebar-item={'view' in item ? '' : undefined}
+                      data-active={'view' in item && item.view === 'stories' ? '' : undefined}
+                      aria-current={
+                        'view' in item && item.view === 'stories' ? 'page' : undefined
+                      }
+                      class:list={[menuButton, navButtonPadding, 'h-8 p-2', navActive]}
+                    >
+                      <Icon name={item.icon} />
+                      <span class="truncate">{t.nav[item.key]}</span>
+                    </button>
+                  )}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <SidebarUserMenu locale={locale} />
+    </div>
+  </div>
+</div>

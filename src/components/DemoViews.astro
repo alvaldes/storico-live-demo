@@ -1,0 +1,40 @@
+---
+/**
+ * The three views the demo simulates, in the product's own order: the story
+ * detail, the board, and the export. The sidebar switches between them and the
+ * demo hops to the board once the extraction lands, which is the flow the app
+ * has.
+ *
+ * Exactly one panel is shown; the rest are hidden in the markup with
+ * `style.display`, not with a class that another display utility could beat.
+ * The task dialogs live here too: one per task, reachable from either view.
+ */
+import DemoExport from '@/components/DemoExport.astro';
+import DemoKanban from '@/components/DemoKanban.astro';
+import DemoStoryDetail from '@/components/DemoStoryDetail.astro';
+import TaskDialog from '@/components/TaskDialog.astro';
+import { TASKS } from '@/data/guion';
+import type { Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<div data-view-root data-view="stories">
+  <div data-view-panel="stories">
+    <DemoStoryDetail locale={locale} />
+  </div>
+
+  <div data-view-panel="kanban" style="display:none">
+    <DemoKanban locale={locale} />
+  </div>
+
+  <div data-view-panel="export" style="display:none">
+    <DemoExport locale={locale} />
+  </div>
+</div>
+
+{TASKS.map((task) => <TaskDialog task={task} locale={locale} />)}

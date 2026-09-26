@@ -1,0 +1,274 @@
+/* ---------------------------------------------------------------------------
+   Copied from Storico - frontend/src/styles/globals.css
+   Source: ~/Developer/storico at 4dcd4fc (v0.7.0, 2026-09-25)
+
+   This is the product's design system and it is meant to stay identical. If
+   Storico changes its tokens, this file is re-copied from the new commit
+   instead of being hand-edited.
+
+   Single deviation: the `@import 'shadcn/tailwind.css'` line was removed. That
+   file carries no colour tokens - only `data-*` variants, `@property`
+   registrations and utilities for shadcn's own components - and the demo uses
+   none of them. Keeping it would mean installing the shadcn CLI here for
+   nothing. Re-adding it is one line.
+   --------------------------------------------------------------------------- */
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+/* Geist font removed — using system fonts for now */
+
+/* ── Loading dots animation for breadcrumb ─────────────────────── */
+@keyframes loading-dots {
+  20% {
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
+  }
+  40% {
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
+  }
+  60% {
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
+  }
+  80% {
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
+  }
+}
+
+/* ── shadcn CSS variable aliases ───────────────────────────────── */
+/* Maps shadcn's variable names to our design tokens.
+   @theme inline generates Tailwind utilities (bg-background, etc.)
+   without overriding our @theme tokens. */
+@theme inline {
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-text);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-text);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-text);
+  --color-primary: var(--color-primary-500);
+  --color-primary-foreground: oklch(0.99 0 0);
+  --color-secondary: var(--color-surface-secondary);
+  --color-secondary-foreground: var(--color-text);
+  --color-muted: var(--color-surface-secondary);
+  --color-muted-foreground: var(--color-text-secondary);
+  --color-accent: var(--color-surface-secondary);
+  --color-accent-foreground: var(--color-text);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.99 0 0);
+  /* `--color-border` is intentionally not aliased here: shadcn's name and our
+     design token are both `--color-border`, so `border-border` resolves straight
+     to the `@theme` token below. Self-aliasing it emitted an invalid
+     `--color-border: var(--color-border)` whenever that token was absent. */
+  --color-input: var(--color-border);
+  --color-ring: var(--color-primary-500);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  /* shadcn's default --radius token (maps to our --radius-md base). */
+  --radius: var(--radius-md);
+  --font-sans: 'Inter', 'SF Pro', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* ── Sidebar (shadcn sidebar-07) ────────────────────────────── */
+  --color-sidebar: var(--color-surface);
+  --color-sidebar-foreground: var(--color-text);
+  --color-sidebar-primary: var(--color-primary-500);
+  --color-sidebar-primary-foreground: oklch(0.99 0 0);
+  --color-sidebar-accent: var(--color-surface-secondary);
+  --color-sidebar-accent-foreground: var(--color-text);
+  --color-sidebar-border: var(--color-border);
+  --color-sidebar-ring: var(--color-primary-500);
+}
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+@theme {
+  --color-primary-50: oklch(0.93 0.03 250);
+  --color-primary-100: oklch(0.87 0.06 250);
+  --color-primary-200: oklch(0.79 0.09 250);
+  --color-primary-300: oklch(0.7 0.12 250);
+  --color-primary-400: oklch(0.62 0.14 250);
+  --color-primary-500: oklch(0.55 0.15 250);
+  --color-primary-600: oklch(0.47 0.14 250);
+  --color-primary-700: oklch(0.39 0.12 250);
+  --color-primary-800: oklch(0.31 0.1 250);
+  --color-primary-900: oklch(0.24 0.07 250);
+  --color-primary-950: oklch(0.17 0.04 250);
+
+  --color-secondary-50: oklch(0.95 0.02 180);
+  --color-secondary-500: oklch(0.6 0.1 180);
+  --color-secondary-700: oklch(0.42 0.08 180);
+
+  --color-surface: oklch(0.99 0 0);
+  --color-surface-secondary: oklch(0.96 0.01 260);
+  --color-border: oklch(0.88 0.01 260);
+  --color-text: oklch(0.15 0.01 260);
+  --color-text-secondary: oklch(0.45 0.01 260);
+  --color-text-tertiary: #64748b;
+
+  /* Semantic: status / success indicators */
+  --color-success: oklch(0.55 0.15 145);
+  --color-success-bg: oklch(0.96 0.03 145);
+  --color-success-border: oklch(0.87 0.05 145);
+  --color-success-text: oklch(0.4 0.1 145);
+
+  /* Semantic: API method badges */
+  --color-method-post-bg: oklch(0.96 0.03 145);
+  --color-method-post-text: oklch(0.4 0.1 145);
+  --color-method-get-bg: oklch(0.95 0.03 250);
+  --color-method-get-text: oklch(0.35 0.15 250);
+
+  /* Feature card accent colors */
+  --color-accent-blue-bg: oklch(0.95 0.03 250);
+  --color-accent-blue-icon: oklch(0.45 0.18 250);
+  --color-accent-green-bg: oklch(0.96 0.04 145);
+  --color-accent-green-icon: oklch(0.5 0.18 145);
+  --color-accent-orange-bg: oklch(0.95 0.04 70);
+  --color-accent-orange-icon: oklch(0.6 0.18 70);
+
+  /* Landing page extras */
+  --color-body: #f8fafc;
+  --color-inverse: #0f172a;
+  --color-inverse-text: #ffffff;
+  --color-inverse-muted: #94a3b8;
+  --color-inverse-border: #1e293b;
+
+  /* Phone mockup (dark device in light theme) */
+  --color-mockup-bg: #0f172a;
+  --color-mockup-header: #1e293b;
+  --color-mockup-border: #1e293b;
+  --color-mockup-task-bg: #1e293b;
+  --color-mockup-task-border: #334155;
+  --color-mockup-text: #e2e8f0;
+  --color-mockup-muted: #64748b;
+  --color-mockup-label: #94a3b8;
+
+  /* Shadows — using theme colors instead of hardcoded rgba */
+  --shadow-phone: 0 24px 48px -8px color-mix(in oklch, var(--color-inverse) 15%, transparent);
+  --shadow-card: 0 8px 30px -4px color-mix(in oklch, var(--color-inverse) 4%, transparent);
+  --shadow-primary-sm: 0 4px 12px color-mix(in oklch, var(--color-primary-600) 20%, transparent);
+  --shadow-primary-lg: 0 4px 20px color-mix(in oklch, var(--color-primary-600) 25%, transparent);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* ── Dark Theme ───────────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Token overrides must share the *exact* scope of the `dark:` utility variant
+   (`:where([data-theme="dark"], [data-theme="dark"] *)`), which matches a nested
+   themed subtree as well as the root. Writing these overrides as `@variant dark { … }`
+   instead compiles to `:scope:where(…)`, i.e. :root-only: a nested `data-theme="dark"`
+   subtree would then get dark utilities resolving against light tokens, inverting
+   every themed control.
+   `:root[data-theme="dark"]` outranks the light `:root` block; the bare attribute and
+   descendant selectors carry the nested case. */
+:root[data-theme='dark'],
+[data-theme='dark'],
+[data-theme='dark'] * {
+  --color-surface: #0f141d;
+  --color-surface-secondary: oklch(0.18 0.01 260);
+  --color-border: oklch(0.25 0.01 260);
+  --color-text: oklch(0.93 0.01 260);
+  --color-text-secondary: oklch(0.63 0.01 260);
+  --color-text-tertiary: #475569;
+
+  /* Sidebar — dark */
+  --color-sidebar: oklch(0.14 0.01 260);
+  --color-sidebar-foreground: oklch(0.93 0.01 260);
+  --color-sidebar-primary: var(--color-primary-500);
+  --color-sidebar-primary-foreground: oklch(0.99 0 0);
+  --color-sidebar-accent: oklch(0.18 0.01 260);
+  --color-sidebar-accent-foreground: oklch(0.93 0.01 260);
+  --color-sidebar-border: oklch(0.25 0.01 260);
+  --color-sidebar-ring: var(--color-primary-500);
+
+  --color-body: #0b0f17;
+  --color-inverse: #1a1f2e;
+  --color-inverse-text: #f1f5f9;
+  --color-inverse-muted: #64748b;
+  --color-inverse-border: #334155;
+
+  /* Semantic: success - dark */
+  --color-success-bg: oklch(0.15 0.04 145 / 0.5);
+  --color-success-border: oklch(0.3 0.07 145);
+  --color-success-text: oklch(0.8 0.1 145);
+
+  /* API method badges - dark */
+  --color-method-post-bg: oklch(0.2 0.06 145);
+  --color-method-post-text: oklch(0.75 0.1 145);
+  --color-method-get-bg: oklch(0.2 0.05 250);
+  --color-method-get-text: oklch(0.75 0.12 250);
+
+  /* Feature card accents - dark */
+  --color-accent-blue-bg: oklch(0.18 0.04 250);
+  --color-accent-blue-icon: oklch(0.55 0.18 250);
+  --color-accent-green-bg: oklch(0.18 0.04 145);
+  --color-accent-green-icon: oklch(0.55 0.15 145);
+  --color-accent-orange-bg: oklch(0.18 0.04 70);
+  --color-accent-orange-icon: oklch(0.65 0.18 70);
+
+  /* Invert mockup: light device UI on dark bg */
+  --color-mockup-bg: #e8e8e8;
+  --color-mockup-header: #e0e0e0;
+  --color-mockup-border: #e2e8f0;
+  --color-mockup-task-bg: #f8fafc;
+  --color-mockup-task-border: #e2e8f0;
+  --color-mockup-text: #0f172a;
+  --color-mockup-muted: #94a3b8;
+  --color-mockup-label: #64748b;
+}
+
+/* ── Base Styles ──────────────────────────────────────────────── */
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+/* ── View Transitions ─────────────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
+
+/* ── Scrollbar — dark-aware ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

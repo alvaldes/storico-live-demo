@@ -1,0 +1,159 @@
+---
+/**
+ * The product's Kanban page, reproduced from `KanbanBoard`, `KanbanColumn` and
+ * `KanbanCard`: the early empty state when there is nothing to show, then the
+ * title row with the task count, five fixed-width columns, and the card recipe
+ * (grip, title, description, label badges).
+ *
+ * The drag & drop is hand-written on HTML5 drag events instead of the product's
+ * `@hello-pangea/dnd`, which is a ~38 KB gzip dependency and would be the single
+ * heaviest thing on the page. The rules it enforces are the product's: the same
+ * valid transitions, and the same refusal message when a move is not allowed.
+ *
+ * Both states are rendered and `data-when` picks one, driven by the same
+ * extraction state as the story view: before extracting, the board is empty,
+ * because no tasks exist yet.
+ */
+import Icon from '@/components/Icon.astro';
+import { TASKS } from '@/data/guion';
+import { TASK_STATUSES } from '@/data/types';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+const columns = TASK_STATUSES.map((id) => ({
+  id,
+  label: t.kanban.columns[id],
+  tasks: TASKS.filter((task) => task.status === id),
+}));
+
+const total = t.kanban.total_tasks.replace('{count}', String(TASKS.length));
+
+const badgeLabel =
+  'inline-flex h-5 shrink-0 items-center rounded-4xl border border-border px-2 py-0.5 text-[10px] font-medium leading-none text-foreground';
+
+const card =
+  'group/card rounded-lg border border-border bg-(--color-surface) p-3 shadow-sm transition-shadow data-[dragging]:shadow-lg data-[dragging]:ring-2 data-[dragging]:ring-primary/30 data-[dragging]:opacity-70';
+---
+
+<div class="flex flex-col">
+  <!-- Nothing extracted yet: the product returns this instead of the board. -->
+  <div
+    data-when="idle extracting"
+    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-20"
+  >
+    <p class="text-sm font-medium text-foreground">{t.kanban.empty_board}</p>
+    <p class="mt-2 text-sm text-muted-foreground">{t.kanban.empty_board_hint}</p>
+  </div>
+
+  <div data-when="extracted" style="display:none" class="flex flex-col">
+    <div class="flex shrink-0 items-center justify-between gap-4">
+      <h1 class="text-2xl font-semibold text-foreground">{t.kanban.title}</h1>
+      <span class="text-sm text-muted-foreground">{total}</span>
+    </div>
+
+    <!--
+      The refusal, copied from the product's board: the same box, the same
+      wording, and the sentence template kept in `data-message` so the catalogue
+      stays the only place the copy lives.
+    -->
+    <div
+      data-kanban-toast
+      data-message={t.kanban.invalid_drop}
+      style="display:none"
+      class="fixed top-4 right-4 z-50 max-w-md"
+    >
+      <div
+        class="flex items-start gap-3 rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive shadow-lg"
+      >
+        <Icon name="alert-circle" class="mt-0.5 size-5 shrink-0" />
+        <div class="flex-1">
+          <p class="text-sm font-medium">{t.kanban.invalid_drop_title}</p>
+          <p data-kanban-toast-message class="mt-1 text-sm text-destructive/90"></p>
+        </div>
+        <button
+          type="button"
+          data-kanban-toast-close
+          class="rounded-md px-2 text-sm transition-colors hover:bg-destructive/10"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-6 overflow-x-auto pb-2">
+      <div class="flex min-w-fit items-stretch gap-4">
+        {
+          columns.map((column) => (
+            <div class="flex w-72 shrink-0 flex-col rounded-xl border border-border bg-(--color-surface-secondary)/50">
+              <div class="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
+                <h3 class="text-sm font-semibold text-foreground">{column.label}</h3>
+                <span
+                  data-column-count={column.id}
+                  class="inline-flex items-center justify-center rounded-full bg-(--color-surface-secondary) px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                >
+                  {column.tasks.length}
+                </span>
+              </div>
+
+              <div
+                data-column={column.id}
+                data-column-name={column.label}
+                data-empty-label={t.kanban.empty_column}
+                class="flex min-h-[360px] flex-1 flex-col gap-2 p-3 transition-colors data-[over]:bg-primary/5"
+              >
+                {column.tasks.length === 0 && (
+                  <div
+                    data-column-empty
+                    class="flex flex-col items-center justify-center py-8 text-xs text-muted-foreground"
+                  >
+                    {t.kanban.empty_column}
+                  </div>
+                )}
+
+                {column.tasks.map((task) => (
+                  <div data-card={task.id} data-status={task.status} draggable="true" class={card}>
+                    <div class="flex items-start gap-2">
+                      <span
+                        data-drag-handle
+                        class="mt-0.5 shrink-0 cursor-grab text-muted-foreground/40 active:cursor-grabbing"
+                      >
+                        <Icon name="grip-vertical" class="size-4" />
+                      </span>
+                      <div class="min-w-0 flex-1">
+                        <button
+                          type="button"
+                          data-nav="stories"
+                          class="line-clamp-2 text-left text-sm font-medium text-foreground transition-colors hover:text-primary"
+                        >
+                          {task.title}
+                        </button>
+                        {task.description && (
+                          <p class="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                            {task.description}
+                          </p>
+                        )}
+                        {task.labels.length > 0 && (
+                          <div class="mt-2 flex flex-wrap gap-1">
+                            {task.labels.map((label) => (
+                              <span class={badgeLabel}>{label}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>

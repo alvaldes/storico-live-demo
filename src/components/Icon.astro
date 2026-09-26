@@ -1,0 +1,40 @@
+---
+/**
+ * Renders one icon from the generated lucide set. The wrapper carries lucide's
+ * defaults, so the geometry in src/lib/icons.ts is drawn exactly as the product
+ * draws it; sizing stays with the caller's Tailwind classes, as in the product.
+ */
+import { ICONS } from '@/lib/icons';
+
+interface Props {
+  name: string;
+  class?: string;
+}
+
+const { name, class: className = 'size-4' } = Astro.props;
+const inner = ICONS[name];
+
+if (!inner) {
+  throw new Error(`Icon "${name}" is not in src/lib/icons.ts. Add it to the generator list.`);
+}
+---
+
+<!--
+  width/height are a fallback, not the sizing mechanism: a class always wins over
+  the attribute. Without them, an icon whose `class` carries no size utility (say,
+  only `dark:hidden`) falls back to the replaced-element default and renders huge.
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden="true"
+  set:html={inner}
+/>

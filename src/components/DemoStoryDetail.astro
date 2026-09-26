@@ -1,0 +1,249 @@
+---
+/**
+ * The product's story detail page, reproduced from `StoryDetail.tsx`.
+ *
+ * The layout, the class recipes and the copy are the product's: the status badge
+ * row with the fingerprint and the creation date, the full user story card, the
+ * parts card, and the tasks section with the Extract button. What the demo adds
+ * is the format validation row, which in the product belongs to the story form;
+ * here the story arrives typed, so the row is what shows the format being
+ * checked.
+ *
+ * The page renders in the state a visit ends in - the story written out, the
+ * validation green, the parts filled - and the tasks hidden. With JavaScript the
+ * text is retyped from scratch, so a visitor without it still reads the story.
+ * Hidden elements are hidden in the markup, not only by the script, so nothing
+ * flashes before the first paint.
+ */
+import Icon from '@/components/Icon.astro';
+import { STORY, STORY_PARTS, TASKS } from '@/data/guion';
+import { shortUUID } from '@/data/types';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+const created = new Date(STORY.createdAt).toLocaleDateString(
+  locale === 'es' ? 'es-MX' : 'en-US',
+  { year: 'numeric', month: 'long', day: 'numeric' },
+);
+
+// The product's Badge recipe, one string per variant it uses on this page.
+const badge =
+  'inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap';
+const badgeOutline = `${badge} border-border text-foreground`;
+const badgeSecondary = `${badge} bg-secondary text-secondary-foreground`;
+const badgeDefault = `${badge} bg-primary text-primary-foreground`;
+const badgeLabel = `${badge} border-border text-[10px] text-foreground`;
+
+// The product's Button recipe, size="sm".
+const button =
+  'inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-[min(var(--radius-md),12px)] border border-transparent px-2.5 text-[0.8rem] font-medium whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50';
+const btnDefault = `${button} bg-primary text-primary-foreground hover:bg-primary/80`;
+const btnSecondary = `${button} bg-secondary text-secondary-foreground`;
+const btnOutline = `${button} border-border bg-background hover:bg-muted`;
+const btnOutlineDestructive = `${button} border-border bg-background text-destructive hover:bg-muted`;
+
+const card = 'rounded-xl border border-border bg-(--color-surface) p-6';
+const cardLabel =
+  'mb-3 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase';
+
+const chip =
+  'inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium transition-colors';
+const chipValid = `${chip} border-(--color-success-border) bg-(--color-success-bg) text-(--color-success-text)`;
+const chipLoose =
+  'data-[chip-state=pending]:border-(--color-border) data-[chip-state=pending]:bg-(--color-surface-secondary) data-[chip-state=pending]:text-(--color-text-tertiary) data-[chip-state=pending]:opacity-70';
+
+const emptyState = 'flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12';
+
+const KEYWORDS = [
+  { key: 'asA', label: t.stories.keyword_as_a },
+  { key: 'iWant', label: t.stories.keyword_i_want },
+  { key: 'soThat', label: t.stories.keyword_so_that },
+];
+
+const PARTS = [
+  { key: 'asA', label: t.stories.actor_label, value: STORY_PARTS[0].value },
+  { key: 'iWant', label: t.stories.feature_label, value: STORY_PARTS[1].value },
+  { key: 'soThat', label: t.stories.benefit_label, value: STORY_PARTS[2].value },
+];
+---
+
+<div data-story-card data-story-state="idle" class="space-y-6">
+  <!--
+    The product links back to the parent project or to the story list. This
+    project has neither, so it is a button with the link's styling: same look,
+    no 404.
+  -->
+  <button
+    type="button"
+    class="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+  >
+    <Icon name="arrow-left" />
+    {t.stories.detail_back_to_stories}
+  </button>
+
+  <!-- Status row -->
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span data-when="idle" class={badgeOutline}>{t.stories.status_pending_extraction}</span>
+      <span data-when="extracting" class={badgeSecondary} style="display:none">
+        {t.stories.status_extracting}
+      </span>
+      <span data-when="extracted" class={badgeDefault} style="display:none">
+        {t.stories.status_extracted}
+      </span>
+
+      <span class="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground/60">
+        <Icon name="fingerprint" class="size-3" />
+        {shortUUID(STORY.id)}
+      </span>
+
+      <span class="text-xs text-muted-foreground">
+        {t.stories.detail_created} {created}
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button type="button" class={btnOutline}>
+        <Icon name="pencil" />
+        {t.common.edit}
+      </button>
+      <button type="button" class={btnOutlineDestructive}>
+        <Icon name="trash-2" />
+        {t.common.delete}
+      </button>
+    </div>
+  </div>
+
+  <!-- Full user story -->
+  <div class={card}>
+    <div class={cardLabel}>
+      <Icon name="file-text" class="size-3.5" />
+      {t.stories.raw_text_label}
+    </div>
+    <p class="text-base leading-relaxed text-foreground min-h-[4.5rem]">
+      <span data-story-text data-full={STORY.rawText}>{STORY.rawText}</span>
+    </p>
+
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+      <span class="text-xs text-muted-foreground">{t.stories.keyword_validation}</span>
+      {
+        KEYWORDS.map((keyword) => (
+          <span data-chip={keyword.key} data-chip-state="valid" class:list={[chipValid, chipLoose]}>
+            <Icon name="check" class="size-3.5" />
+            {keyword.label}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Parts -->
+  <div class={card}>
+    <div class="mb-4 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+      <Icon name="list-tree" class="size-3.5" />
+      {t.stories.detail_parts}
+    </div>
+    <div class="grid gap-4 sm:grid-cols-3">
+      {
+        PARTS.map((part) => (
+          <div>
+            <p class="mb-1 text-xs text-muted-foreground">{part.label}</p>
+            <p data-part={part.key} class="text-sm font-medium text-foreground min-h-[1.5rem]">
+              {part.value}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Tasks -->
+  <div class="space-y-3">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-foreground">{t.stories.detail_tasks_title}</h2>
+
+      <!--
+        One slot in the row, three buttons in it: one per extraction state. The
+        product has a single button whose icon, label and variant change with the
+        state; here each state is its own button and `data-when` picks the visible
+        one. Without the wrapper the three would be separate flex items of a
+        `justify-between` row and would spread across it.
+      -->
+      <div class="flex items-center gap-2">
+        <button type="button" data-extract data-when="idle" class={btnDefault}>
+          <Icon name="sparkles" />
+          {t.stories.detail_extract}
+        </button>
+        <button
+          type="button"
+          disabled
+          data-when="extracting"
+          class={btnSecondary}
+          style="display:none"
+        >
+          <Icon name="loader-2" class="size-4 animate-spin" />
+          {t.stories.extraction_pending}
+        </button>
+        <button
+          type="button"
+          disabled
+          data-when="extracted"
+          class={btnOutline}
+          style="display:none"
+        >
+          <Icon name="check-circle-2" />
+          {t.stories.extraction_complete}
+        </button>
+      </div>
+    </div>
+
+    <div data-when="idle" class={emptyState}>
+      <Icon name="sparkles" class="mb-3 size-8 text-muted-foreground" />
+      <p class="text-sm text-muted-foreground">{t.stories.detail_tasks_empty}</p>
+    </div>
+
+    <div data-when="extracting" class={emptyState} style="display:none">
+      <Icon name="loader-2" class="mb-3 size-8 animate-spin text-muted-foreground" />
+      <p class="text-sm text-muted-foreground">
+        {t.stories.extraction_tasks_in_progress}
+      </p>
+    </div>
+
+    <div data-when="extracted" class="space-y-2" style="display:none">
+      {
+        TASKS.map((task) => (
+          <div class="space-y-2 rounded-lg border border-border bg-(--color-surface) p-4">
+            <div class="flex items-start justify-between gap-2">
+              <p class="text-sm font-medium text-foreground">{task.title}</p>
+              <div class="flex shrink-0 items-center gap-2">
+                {task.labels.length > 0 && (
+                  <div class="flex gap-1">
+                    {task.labels.map((label) => (
+                      <span class={badgeLabel}>{label}</span>
+                    ))}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  data-task-open={task.id}
+                  title={t.taskEditor.title}
+                  class="text-muted-foreground/50 transition-colors hover:text-muted-foreground"
+                >
+                  <Icon name="pencil" class="size-3.5" />
+                </button>
+              </div>
+            </div>
+            {task.description && (
+              <p class="text-sm text-muted-foreground">{task.description}</p>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>

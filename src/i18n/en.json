@@ -1,0 +1,108 @@
+{
+  "demo": {
+    "badge": "Live demo",
+    "title": "From a user story to Kanban tasks",
+    "subtitle": "A simulation of Storico: the story types itself and the tasks come from a prepared catalog. Nothing here calls an LLM or a backend.",
+    "storyHint": "Standard format: As a(n) ..., I want ..., so that ...",
+    "footerNote": "Demo data, prepared for this exercise. No request leaves your browser.",
+    "userName": "Demo User",
+    "taskDetailTitle": "Task",
+    "taskDetailHint": "This is the task the extraction produced. Move it with the status field."
+  },
+  "language": {
+    "label": "Language"
+  },
+  "app": {
+    "name": "Storico",
+    "tagline": "From user stories to Kanban tasks in seconds."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "allProjects": "All Projects",
+    "stories": "User Stories",
+    "kanban": "Kanban Board",
+    "export": "Export",
+    "settings": "Settings",
+    "account": "Account",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "navigation": "Navigation",
+    "toggleMenu": "Toggle menu"
+  },
+  "common": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "sidebar": {
+    "workspaces": "Workspaces",
+    "newWorkspace": "New Workspace"
+  },
+  "stories": {
+    "raw_text_label": "Full user story",
+    "detail_parts": "Parts",
+    "actor_label": "Actor / Role",
+    "feature_label": "Feature / Action",
+    "benefit_label": "Benefit",
+    "detail_tasks_title": "Tasks",
+    "detail_extract": "Extract Tasks",
+    "extraction_pending": "Extracting...",
+    "extraction_complete": "Extracted",
+    "extraction_tasks_in_progress": "Extracting tasks...",
+    "detail_tasks_empty": "No tasks yet. Extract tasks from this user story.",
+    "detail_back_to_stories": "Back to stories",
+    "detail_back_to_project": "Back to project",
+    "detail_created": "Created",
+    "keyword_as_a": "\"As a(n)\"",
+    "keyword_i_want": "\"I want\"",
+    "keyword_so_that": "\"so that\"",
+    "keyword_validation": "Format validation",
+    "keyword_valid": "Valid format — all keywords present",
+    "status_pending_extraction": "Pending Extraction",
+    "status_extracting": "Extracting",
+    "status_extracted": "Extracted",
+    "status_failed_extraction": "Failed Extraction"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "empty_board": "No tasks in this workspace yet",
+    "empty_board_hint": "Extract tasks from a user story to see them here.",
+    "empty_column": "No tasks yet",
+    "total_tasks": "{count} tasks",
+    "invalid_drop_title": "Invalid Move",
+    "invalid_drop": "Cannot move task from {from} to {to}. Allowed: {allowed}",
+    "columns": {
+      "backlog": "Backlog",
+      "todo": "To Do",
+      "in_progress": "In Progress",
+      "review": "Review",
+      "done": "Done"
+    }
+  },
+  "exportPage": {
+    "title": "Export Tasks",
+    "description": "Export all workspace tasks in JSON or Markdown format.",
+    "format_label": "Format",
+    "format_json": "JSON",
+    "format_markdown": "Markdown",
+    "download": "Download",
+    "no_tasks": "No tasks to export in this workspace."
+  },
+  "taskEditor": {
+    "title": "Edit Task",
+    "description": "Update task details",
+    "title_label": "Title",
+    "description_label": "Description",
+    "status_label": "Status",
+    "labels_label": "Labels",
+    "dependencies_label": "Dependencies",
+    "cancel": "Cancel"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  }
+}

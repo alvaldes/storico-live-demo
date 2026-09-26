@@ -1,0 +1,5 @@
+# Mirrors the product's frontend, which declares the same two: pnpm 12 blocks
+# install scripts by default, and esbuild and sharp need theirs.
+allowBuilds:
+  esbuild: true
+  sharp: true

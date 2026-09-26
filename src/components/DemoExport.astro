@@ -1,0 +1,85 @@
+---
+/**
+ * The product's export page, reproduced from `ExportPanel` and `/export`.
+ *
+ * Two differences, both because a demo has no endpoint:
+ *
+ *  - The content is shown. The product downloads the file and the visitor never
+ *    sees it; here the whole point is to show what comes out, so both formats are
+ *    rendered in a `<pre>` and the toggle switches between them.
+ *  - The download is built in the browser from what is on screen (a Blob), not
+ *    fetched from the API. Same bytes, same filename shape.
+ */
+import Icon from '@/components/Icon.astro';
+import { exportJson, exportMarkdown } from '@/data/export';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+const formats = [
+  {
+    id: 'json',
+    label: t.exportPage.format_json,
+    filename: 'tasks-export-demo.json',
+    content: exportJson(),
+  },
+  {
+    id: 'markdown',
+    label: t.exportPage.format_markdown,
+    filename: 'tasks-export-demo.md',
+    content: exportMarkdown(),
+  },
+];
+
+const button =
+  'inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-lg border border-border bg-background px-2.5 text-[0.8rem] font-medium whitespace-nowrap transition-colors hover:bg-muted';
+---
+
+<div class="flex flex-col">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-foreground">{t.exportPage.title}</h1>
+      <p class="mt-1 text-sm text-muted-foreground">{t.exportPage.description}</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-xs text-muted-foreground">{t.exportPage.format_label}</span>
+      <div class="flex items-center gap-1 rounded-lg border border-border p-0.5">
+        {
+          formats.map((format, index) => (
+            <button
+              type="button"
+              data-export-format={format.id}
+              data-active={index === 0 ? '' : undefined}
+              class="rounded-md px-3 py-1 text-sm font-medium text-muted-foreground transition-colors data-[active]:bg-(--color-surface-secondary) data-[active]:text-foreground"
+            >
+              {format.label}
+            </button>
+          ))
+        }
+      </div>
+      <button type="button" data-export-download class={button}>
+        <Icon name="upload" class="size-4" />
+        {t.exportPage.download}
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    {
+      formats.map((format, index) => (
+        <pre
+          data-export-panel={format.id}
+          data-filename={format.filename}
+          style={index === 0 ? undefined : 'display:none'}
+          class="m-0 max-h-[60vh] overflow-auto rounded-xl border border-border bg-(--color-surface) p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap break-words text-foreground"
+        ><code>{format.content}</code></pre>
+      ))
+    }
+  </div>
+</div>

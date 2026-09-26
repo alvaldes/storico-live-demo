@@ -1,0 +1,139 @@
+---
+/**
+ * One task, opened as a dialog. Shaped like the product's `TaskEditor`, with two
+ * deliberate differences:
+ *
+ *  - It does not edit: the demo shows what the extraction produced. Editing a
+ *    task is out of scope by decision, so title and description are read, not
+ *    typed.
+ *  - The status control is real. The product's editor only offers the valid
+ *    transitions and refuses the rest, so the demo renders exactly those options
+ *    and moving a task from here goes through the same check as the drag & drop.
+ *
+ * The dialog is markup like everything else: closed it has no display, open it is
+ * a flex box. State lives in `style.display`, never in competing classes.
+ */
+import { TASKS } from '@/data/guion';
+import { TASK_STATUSES, VALID_TASK_TRANSITIONS, type Task } from '@/data/types';
+import { getT, type Locale } from '@/i18n';
+
+interface Props {
+  task: Task;
+  locale: Locale;
+}
+
+const { task, locale } = Astro.props;
+const t = getT(locale);
+
+// The product's editor offers the current status plus the allowed moves, which is
+// what makes an invalid transition impossible from here.
+const allowed = [task.status, ...VALID_TASK_TRANSITIONS[task.status]];
+const statusOptions = TASK_STATUSES.filter((status) => allowed.includes(status)).map((status) => ({
+  value: status,
+  label: t.kanban.columns[status],
+}));
+
+const dependencyTitles = task.dependencies.map(
+  (id) => TASKS.find((candidate) => candidate.id === id)?.title ?? id,
+);
+
+const fieldLabel = 'text-xs font-medium text-muted-foreground';
+const badgeLabel =
+  'inline-flex h-5 shrink-0 items-center rounded-4xl border border-border px-2 py-0.5 text-[10px] font-medium text-foreground';
+---
+
+<div
+  id={`task-dialog-${task.id}`}
+  data-dialog
+  data-task-id={task.id}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`task-dialog-title-${task.id}`}
+  style="display:none"
+  class="fixed inset-0 z-50 items-center justify-center p-4"
+>
+  <div data-dialog-backdrop class="absolute inset-0 bg-black/50"></div>
+
+  <div
+    class="relative z-10 max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-(--color-surface) p-6 shadow-lg"
+  >
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 id={`task-dialog-title-${task.id}`} class="text-lg font-semibold text-foreground">
+          {t.demo.taskDetailTitle}
+        </h2>
+        <p class="mt-1 text-sm text-muted-foreground">{t.demo.taskDetailHint}</p>
+      </div>
+      <button
+        type="button"
+        data-dialog-close
+        aria-label={t.taskEditor.cancel}
+        class="rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="mt-5 space-y-5">
+      <div class="space-y-1.5">
+        <p class={fieldLabel}>{t.taskEditor.title_label}</p>
+        <p class="text-sm font-medium text-foreground">{task.title}</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <p class={fieldLabel}>{t.taskEditor.description_label}</p>
+        <p class="text-sm text-muted-foreground">{task.description}</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class={fieldLabel} for={`task-status-${task.id}`}>
+          {t.taskEditor.status_label}
+        </label>
+        <select
+          id={`task-status-${task.id}`}
+          data-task-status
+          data-task-id={task.id}
+          data-from={task.status}
+          class="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm text-foreground outline-none focus-visible:border-ring"
+        >
+          {
+            statusOptions.map((option) => (
+              <option value={option.value} selected={option.value === task.status}>
+                {option.label}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+
+      {
+        task.labels.length > 0 && (
+          <div class="space-y-1.5">
+            <p class={fieldLabel}>{t.taskEditor.labels_label}</p>
+            <div class="flex flex-wrap gap-1">
+              {task.labels.map((label) => (
+                <span class={badgeLabel}>{label}</span>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        dependencyTitles.length > 0 && (
+          <div class="space-y-1.5">
+            <p class={fieldLabel}>{t.taskEditor.dependencies_label}</p>
+            <ul class="m-0 list-none space-y-1 p-0">
+              {dependencyTitles.map((title) => (
+                <li class="flex items-start gap-2 text-sm text-muted-foreground">
+                  <span class="text-(--color-text-tertiary)">→</span>
+                  {title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>

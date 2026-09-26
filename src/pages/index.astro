@@ -1,0 +1,21 @@
+---
+/**
+ * `/` is not a locale of its own: it points at the default one. A meta refresh
+ * keeps this a plain static file — no server, no edge rules, no JavaScript
+ * beyond what the browser does by itself.
+ */
+const target = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/en/`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Storico — live demo</title>
+  </head>
+  <body>
+    <a href={target}>Storico — live demo</a>
+  </body>
+</html>
