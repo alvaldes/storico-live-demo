@@ -88,14 +88,14 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
               >
                 <Icon name="building-2" />
               </span>
-              <span class="grid flex-1 leading-tight">
+              <span class="grid flex-1 leading-tight group-data-[collapsible=icon]:hidden">
                 <span class="truncate font-medium">{WORKSPACE.name}</span>
                 <span
                   class="truncate text-xs text-sidebar-foreground/60"
                   >{WORKSPACE.role}</span
                 >
               </span>
-              <Icon name="chevrons-up-down" class="ml-auto" />
+              <Icon name="chevrons-up-down" class="ml-auto group-data-[collapsible=icon]:hidden" />
             </button>
 
             <!--
@@ -202,7 +202,7 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
                       class:list={[menuButton, navButtonPadding, 'h-8 p-2', navActive]}
                     >
                       <Icon name={item.icon} />
-                      <span class="truncate">{t.nav[item.key]}</span>
+                      <span class="truncate group-data-[collapsible=icon]:hidden">{t.nav[item.key]}</span>
                     </button>
                   )}
                 </li>

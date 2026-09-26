@@ -30,7 +30,7 @@ const initials = t.demo.userName
   .join('');
 
 const menuButton =
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left text-sm outline-none transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>svg]:size-4 [&>svg]:shrink-0';
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left text-sm outline-none transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8! [&>svg]:size-4 [&>svg]:shrink-0';
 
 const menuItem =
   'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0';
@@ -47,7 +47,7 @@ const avatar =
         data-user-menu-trigger
         aria-expanded="false"
         title={t.demo.userName}
-        class:list={[menuButton, 'h-12 p-2 group-data-[collapsible=icon]:p-0!']}
+        class:list={[menuButton, 'h-12 p-2']}
       >
         <span class:list={[avatar, 'group-data-[collapsible=icon]:size-8']}>{initials}</span>
         <span class="grid flex-1 leading-tight group-data-[collapsible=icon]:hidden">
@@ -64,9 +64,7 @@ const avatar =
       <div
         data-user-menu
         role="menu"
-        class="absolute z-50 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10
-          bottom-full left-0 mb-1
-          group-data-[collapsible=icon]:bottom-auto group-data-[collapsible=icon]:left-full group-data-[collapsible=icon]:top-0 group-data-[collapsible=icon]:mb-0 group-data-[collapsible=icon]:ml-2"
+        class="absolute z-50 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 bottom-full left-0 mb-1 group-data-[collapsible=icon]:bottom-0 group-data-[collapsible=icon]:left-7 group-data-[collapsible=icon]:top-auto group-data-[collapsible=icon]:right-auto group-data-[collapsible=icon]:mb-0 group-data-[collapsible=icon]:ml-2"
       >
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <span class={avatar}>{initials}</span>

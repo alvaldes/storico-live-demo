@@ -436,10 +436,24 @@ function initSidebar(): void {
   const toggle = document.querySelector<HTMLButtonElement>('[data-sidebar-toggle]');
   if (!sidebar || !toggle) return;
 
+  const userMenuTrigger = document.querySelector<HTMLButtonElement>('[data-user-menu-trigger]');
+
+  const updateCollapsedState = (isCollapsed: boolean): void => {
+    // Update user menu button padding
+    if (userMenuTrigger) {
+      if (isCollapsed) {
+        userMenuTrigger.style.padding = '0';
+      } else {
+        userMenuTrigger.style.padding = '';
+      }
+    }
+  };
+
   toggle.addEventListener('click', () => {
     const collapsed = sidebar.getAttribute('data-collapsible') === 'icon';
     sidebar.setAttribute('data-collapsible', collapsed ? '' : 'icon');
     toggle.setAttribute('aria-expanded', String(collapsed));
+    updateCollapsedState(!collapsed);
   });
 }
 
