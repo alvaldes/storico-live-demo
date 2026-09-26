@@ -105,7 +105,7 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
             <div
               data-workspace-menu
               role="menu"
-              class="absolute left-full top-0 z-50 ml-2 hidden-- w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10"
+              class="absolute left-full top-0 z-50 ml-2 hidden w-56 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10"
             >
               <span class="text-muted-foreground flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0">{t.sidebar.workspaces}</span>
               <!-- class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0" -->
@@ -154,7 +154,8 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
                         type="button"
                         title={t.nav[item.key]}
                         data-nav-expandable={item.key}
-                        aria-expanded="false"
+                        aria-expanded="true"
+                        data-expanded="true"
                         aria-haspopup="true"
                         class:list={[menuButton, navButtonPadding, 'h-8 p-2', navActive]}
                       >
@@ -167,12 +168,13 @@ const navButtonPadding = 'group-data-[collapsible=icon]:p-2!';
                       <div
                         data-nav-submenu={item.key}
                         role="menu"
-                        class="left-full top-0 ml-1 hidden w-full bg-popover p-1 text-popover-foreground"
+                        class="left-full top-0 ml-1 w-full bg-popover p-1 text-popover-foreground"
                       >
                         {item.children.map((child) => (
                           <button
                             type="button"
                             role="menuitem"
+                            data-nav={child.isCurrent ? 'stories' : undefined}
                             class:list={[
                               'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
                               child.isCurrent && 'font-medium text-primary'

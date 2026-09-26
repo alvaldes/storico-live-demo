@@ -229,8 +229,6 @@ function initExtraction(): void {
     // timer, capped at two seconds by decision.
     window.setTimeout(() => {
       setStoryState('extracted');
-      // The app's own flow goes from the story to the board, so the demo does too.
-      window.setTimeout(() => switchView('kanban'), AUTO_HOP_MS);
     }, EXTRACTION_MS);
   });
 }
@@ -470,7 +468,7 @@ function initWorkspaceMenu(root: HTMLElement): void {
   });
 }
 
-/** The projects expandable menu: shows "All Projects" and current workspace. */
+/** The projects expandable menu: always expanded in the demo to show the current workspace. */
 function initProjectsMenu(): void {
   const triggers = document.querySelectorAll<HTMLButtonElement>('[data-nav-expandable]');
   triggers.forEach((trigger) => {
@@ -478,25 +476,12 @@ function initProjectsMenu(): void {
     const menu = document.querySelector<HTMLElement>(`[data-nav-submenu="${key}"]`);
     if (!menu) return;
 
-    const close = (): void => {
-      menu.classList.add('hidden');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.dataset.expanded = 'false';
-    };
-
+    // In the demo the Projects menu stays open to show the current workspace;
+    // only toggle visibility, no close-on-outside-click.
     trigger.addEventListener('click', () => {
       const hidden = menu.classList.toggle('hidden');
       trigger.setAttribute('aria-expanded', String(!hidden));
       trigger.dataset.expanded = String(!hidden);
-    });
-
-    document.addEventListener('click', (event) => {
-      const target = event.target as Node;
-      if (trigger.contains(target) || menu.contains(target)) return;
-      close();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') close();
     });
   });
 }
