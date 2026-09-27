@@ -1,8 +1,12 @@
 # Storico Live Demo
 
-A static, self-contained simulation of [Storico](../storico): a user story types
-itself out, the "extraction" runs, and the tasks land on the board, which can be
-dragged around and exported.
+A static, self-contained simulation of [Storico](https://storico.vercel.app): a
+user story types itself out, the "extraction" runs, and the tasks land on the
+board, which can be dragged around and exported.
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="Demo of Storico typing a user story and extracting tasks onto the board" width="700" />
+</p>
 
 - **No backend.** No API, no LLM, no keys, no requests. The tasks come from a
   prepared script that ships with the page.
@@ -74,8 +78,3 @@ have to match the product exactly:
 - **Inert by design:** Dashboard, Projects, Settings, Edit, Delete and the story
   list. They are buttons, not links, because the app's routes do not exist here
   and a link that 404s is worse than a button that does nothing.
-
-## Decisions
-
-The reasoning, the measurements and what is deliberately out of scope live in
-the Obsidian vault, not here: `01 - Projects/Storico Live Demo/`.
